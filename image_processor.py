@@ -10,9 +10,20 @@ class ImageProcessor:
         self.ridgeDetector = RidgeDetector()
         self.file_list = None
         self.training_data = []
-        self.ridge_detection_output_data = []
 
-        self.ridge_opencv_outdir = 'DRIVE/processed/ridge-detection-opencv/'
+        self.output_data = {"ridge-opencv": [],
+                            "ridge-custom": []}
+
+        self.out_dirs = {"ridge-opencv": "DRIVE/processed/ridge-detection-opencv/",
+                         "ridge-custom": "DRIVE/processed/ridge-detection-custom/"}
+
+        self.create_output_dirs()
+
+    def create_output_dirs(self):
+        for directory in self.out_dirs.values():
+            print(directory)
+            if not os.path.exists(directory):
+                os.makedirs(directory)
 
     def load_data(self):
         self.file_list = glob.glob('DRIVE/training/images/*.tif')
@@ -20,17 +31,21 @@ class ImageProcessor:
             self.training_data.append(cv2.imread(filename))
 
     def save_data(self):
-        if not os.path.exists(self.ridge_opencv_outdir):
-            os.makedirs(self.ridge_opencv_outdir)
         idx = 0
-        for image in self.ridge_detection_output_data:
-            cv2.imwrite(self.ridge_opencv_outdir + 'processed-' + str(idx) + '.tif', image)
+        for image in self.output_data["ridge-opencv"]:
+            cv2.imwrite(self.out_dirs["ridge-opencv"] + 'processed-' + str(idx) + '.tif', image)
+            idx = idx + 1
+        idx = 0
+        for image in self.output_data["ridge-custom"]:
+            cv2.imwrite(self.out_dirs["ridge-custom"] + 'processed-' + str(idx) + '.tif', image)
             idx = idx + 1
 
     def process_data(self):
         for image in self.training_data:
-            out_image = self.ridgeDetector.detect_ridges(image, DetectionType.OPENCV)
-            self.ridge_detection_output_data.append(out_image)
+            out_ridge_opencv = self.ridgeDetector.detect_ridges(image, DetectionType.OPENCV)
+            out_ridge_custom = self.ridgeDetector.detect_ridges(image, DetectionType.CUSTOM)
+            self.output_data["ridge-opencv"].append(out_ridge_opencv)
+            self.output_data["ridge-custom"].append(out_ridge_custom)
 
     def start(self):
         self.load_data()

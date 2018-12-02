@@ -21,7 +21,10 @@ class RidgeDetector:
         return out_image
 
     def __detect_using_custom(self, image):
-        return image
+        b, g, r = cv2.split(image)
+        hxx, hyy, hxy = hessian_matrix(g, 3.0, order='rc')
+        i1, i2 = hessian_matrix_eigvals(hxx, hxy, hyy)
+        return i1
 
     def __detect_using_opencv(self, image):
         ridge_filter = cv2.ximgproc.RidgeDetectionFilter_create()
