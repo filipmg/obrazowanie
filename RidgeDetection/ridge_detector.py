@@ -1,5 +1,6 @@
 from enum import Enum
 from skimage.feature import hessian_matrix, hessian_matrix_eigvals
+import numpy as np
 import cv2
 
 
@@ -21,10 +22,10 @@ class RidgeDetector:
         return out_image
 
     def __detect_using_custom(self, image):
-        b, g, r = cv2.split(image)
-        hxx, hyy, hxy = hessian_matrix(g, 3.0, order='rc')
-        i1, i2 = hessian_matrix_eigvals(hxx, hxy, hyy)
-        return i1
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        h_elems = hessian_matrix(image=np.float32(image), sigma=3.0, order='xy')
+        eigvals = hessian_matrix_eigvals(h_elems)
+        return eigvals[0]
 
     def __detect_using_opencv(self, image):
         ridge_filter = cv2.ximgproc.RidgeDetectionFilter_create()
