@@ -7,7 +7,7 @@ class JaccardCalculator:
 
     def __init__(self, output_data):
 
-        self.manual_dir = "DRIVE/training/1st_manual/"
+        self.manual_dir = "DRIVE/training/1st_manual/*.png"
         self.output_data = output_data
         self.manual_images = []
         self.jaccard_scores = {}
@@ -16,7 +16,7 @@ class JaccardCalculator:
         self.load_manuals()
 
     def load_manuals(self):
-        self.file_list = glob.glob(self.manual_dir + '*.gif')
+        self.file_list = glob.glob(self.manual_dir)
         for filename in self.file_list:
             self.manual_images.append(cv2.imread(filename))
 
