@@ -47,6 +47,9 @@ class ImageProcessor:
             self.output_data["ridge-opencv"].append(out_ridge_opencv)
             self.output_data["ridge-custom"].append(out_ridge_custom)
 
+    def get_processed_data(self):
+        return self.output_data
+
     def start(self):
         self.load_data()
         self.process_data()
