@@ -22,8 +22,7 @@ class RidgeDetector:
         return out_image
 
     def __detect_using_custom(self, image):
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        h_elems = hessian_matrix(image=np.float32(image), sigma=3.0, order='xy')
+        h_elems = hessian_matrix(image=np.float32(image), sigma=1.5, order='xy')
         eigvals = hessian_matrix_eigvals(h_elems)
         return eigvals[0]
 

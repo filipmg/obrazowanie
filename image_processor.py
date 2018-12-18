@@ -27,21 +27,24 @@ class ImageProcessor:
     def load_data(self):
         self.file_list = glob.glob('DRIVE/training/images/*.tif')
         for filename in self.file_list:
-            self.training_data.append(cv2.imread(filename))
+            self.training_data.append((filename.rsplit('/', 1)[-1].rsplit('.')[0], cv2.imread(filename)))
 
     def save_data(self):
         for dataset, images in self.output_data.items():
-            idx = 0
             for image in images:
-                cv2.imwrite(self.out_dirs[dataset] + 'processed-' + str(idx) + '.tif', image)
-                idx = idx + 1
+                cv2.imwrite(self.out_dirs[dataset] + image[0] + '-processed' + '.tif', image[1])
 
     def process_data(self):
         for image in self.training_data:
-            out_ridge_opencv = self.ridgeDetector.detect_ridges(image, DetectionType.OPENCV)
-            out_ridge_custom = self.ridgeDetector.detect_ridges(image, DetectionType.CUSTOM)
-            self.output_data["ridge-opencv"].append(out_ridge_opencv)
-            self.output_data["ridge-custom"].append(out_ridge_custom)
+            image = (image[0], cv2.cvtColor(image[1], cv2.COLOR_BGR2GRAY))
+            out_ridge_opencv = self.ridgeDetector.detect_ridges(image[1], DetectionType.OPENCV)
+            out_ridge_custom = self.ridgeDetector.detect_ridges(image[1], DetectionType.CUSTOM)
+            norm_image_out_ridge_opencv = cv2.normalize(out_ridge_opencv, None, alpha=0, beta=1,
+                                                        norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+            norm_image_out_ridge_custom = cv2.normalize(out_ridge_custom, None, alpha=0, beta=1,
+                                                        norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+            self.output_data["ridge-opencv"].append((image[0], norm_image_out_ridge_opencv.round()))
+            self.output_data["ridge-custom"].append((image[0], norm_image_out_ridge_custom.round()))
 
     def get_processed_data(self):
         return self.output_data
