@@ -20,7 +20,6 @@ class JaccardCalculator:
         self.file_list = glob.glob(self.manual_dir)
         for filename in self.file_list:
             image = cv2.cvtColor(cv2.imread(filename), cv2.COLOR_BGR2GRAY)
-            image[image == 255] = 1
             self.manual_images.append(image)
 
     def calculate_coefficients(self):

@@ -3,7 +3,8 @@ import glob
 import cv2
 import os
 import statistics
-
+import numpy
+numpy.set_printoptions(threshold=numpy.nan)
 
 class ImageProcessor:
 
@@ -36,11 +37,20 @@ class ImageProcessor:
                 cv2.imwrite(self.out_dirs[dataset] + image[0] + '-processed' + '.tif', image[1])
 
     def process_data(self):
+
+        ridge_thresholding = 5.5
+
         for image in self.training_data:
             image = (image[0], cv2.cvtColor(image[1], cv2.COLOR_BGR2GRAY))
             out_ridge_opencv = self.ridgeDetector.detect_ridges(image[1], DetectionType.OPENCV)
             out_ridge_custom = self.ridgeDetector.detect_ridges(image[1], DetectionType.CUSTOM)
+
+            out_ridge_opencv[out_ridge_opencv > ridge_thresholding*statistics.median(out_ridge_opencv.ravel())] = 255
+            out_ridge_opencv[out_ridge_opencv <= ridge_thresholding*statistics.median(out_ridge_opencv.ravel())] = 0
             self.output_data["ridge-opencv"].append((image[0], out_ridge_opencv))
+
+            out_ridge_custom[out_ridge_custom > ridge_thresholding*statistics.median(out_ridge_custom.ravel())] = 255
+            out_ridge_custom[out_ridge_custom <= ridge_thresholding*statistics.median(out_ridge_custom.ravel())] = 0
             self.output_data["ridge-custom"].append((image[0], out_ridge_custom))
 
     def get_processed_data(self):
