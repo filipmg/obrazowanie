@@ -21,7 +21,6 @@ class ImageProcessor:
 
     def create_output_dirs(self):
         for directory in self.out_dirs.values():
-            print(directory)
             if not os.path.exists(directory):
                 os.makedirs(directory)
 
