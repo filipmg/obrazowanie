@@ -31,13 +31,10 @@ class ImageProcessor:
 
     def save_data(self):
         idx = 0
-        for image in self.output_data["ridge-opencv"]:
-            cv2.imwrite(self.out_dirs["ridge-opencv"] + 'processed-' + str(idx) + '.tif', image)
-            idx = idx + 1
-        idx = 0
-        for image in self.output_data["ridge-custom"]:
-            cv2.imwrite(self.out_dirs["ridge-custom"] + 'processed-' + str(idx) + '.tif', image)
-            idx = idx + 1
+        for dataset, images in self.output_data.items():
+            for image in images:
+                cv2.imwrite(self.out_dirs[dataset] + 'processed-' + str(idx) + '.tif', image)
+                idx = idx + 1
 
     def process_data(self):
         for image in self.training_data:
