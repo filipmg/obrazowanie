@@ -18,13 +18,14 @@ class JaccardCalculator:
     def load_manuals(self):
         self.file_list = glob.glob(self.manual_dir)
         for filename in self.file_list:
-            self.manual_images.append(cv2.imread(filename))
+            image = cv2.cvtColor(cv2.imread(filename), cv2.COLOR_BGR2GRAY)
+            self.manual_images.append(image)
 
     def calculate_coefficients(self):
         for dataset_name, images in self.output_data.items():
             self.jaccard_scores[dataset_name] = []
             for manual_image, processed_image in zip(self.manual_images, images):
-                score = jaccard_similarity_score(manual_image, processed_image)
+                score = jaccard_similarity_score(manual_image.ravel(), processed_image.ravel())
                 self.jaccard_scores[dataset_name].append(score)
 
         print(self.jaccard_scores)
