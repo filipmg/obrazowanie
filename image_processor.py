@@ -30,8 +30,8 @@ class ImageProcessor:
             self.training_data.append(cv2.imread(filename))
 
     def save_data(self):
-        idx = 0
         for dataset, images in self.output_data.items():
+            idx = 0
             for image in images:
                 cv2.imwrite(self.out_dirs[dataset] + 'processed-' + str(idx) + '.tif', image)
                 idx = idx + 1
