@@ -6,4 +6,4 @@ if __name__ == "__main__":
     imageProcessor.start()
 
     jaccardCalculator = JaccardCalculator(imageProcessor.get_processed_data())
-    # jaccardCalculator.calculate_coefficients()
+    jaccardCalculator.calculate_coefficients()

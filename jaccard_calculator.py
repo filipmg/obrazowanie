@@ -25,7 +25,7 @@ class JaccardCalculator:
         for dataset_name, images in self.output_data.items():
             self.jaccard_scores[dataset_name] = []
             for manual_image, processed_image in zip(self.manual_images, images):
-                score = jaccard_similarity_score(manual_image.ravel(), processed_image.ravel())
+                score = jaccard_similarity_score(manual_image.ravel(), (processed_image.ravel()).round())
                 self.jaccard_scores[dataset_name].append(score)
 
         print(self.jaccard_scores)
