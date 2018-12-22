@@ -22,10 +22,10 @@ class ImageProcessor:
                             "thresh-custom": [],
                             "thresh-mean": []}
 
-        self.out_dirs = {"ridge-opencv": "DRIVE\\processed\\ridge-detection-opencv\\",
-                         "ridge-custom": "DRIVE\\processed\\ridge-detection-custom\\",
-                         "thresh-custom": "DRIVE\\processed\\thresholding-custom\\",
-                         "thresh-mean": "DRIVE\\processed\\thresholding-mean\\"}
+        self.out_dirs = {"ridge-opencv": "DRIVE/processed/ridge-detection-opencv/",
+                         "ridge-custom": "DRIVE/processed/ridge-detection-custom/",
+                         "thresh-custom": "DRIVE/processed/thresholding-custom/",
+                         "thresh-mean": "DRIVE/processed/thresholding-mean/"}
 
         self.create_output_dirs()
 
@@ -39,12 +39,12 @@ class ImageProcessor:
         self.load_data_masks()
 
     def load_data_images(self):
-        self.file_list = glob.glob('DRIVE\\training\\images\\*.tif')
+        self.file_list = glob.glob('DRIVE/training/images/*.tif')
         for filename in self.file_list:
-            self.training_data.append((filename.rsplit('\\', 1)[-1].rsplit('.')[0], cv2.imread(filename)))
+            self.training_data.append((filename.rsplit('/', 1)[-1].rsplit('.')[0], cv2.imread(filename)))
         
     def load_data_masks(self):
-        self.file_list = glob.glob('DRIVE\\training\\mask\\*.gif')
+        self.file_list = glob.glob('DRIVE/training/mask/*.gif')
         for filename in self.file_list:
             self.training_data_mask.append(numpy.asarray(Image.open(filename)))
 
