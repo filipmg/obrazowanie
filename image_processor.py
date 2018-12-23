@@ -7,6 +7,7 @@ import statistics
 from PIL import Image
 import numpy
 
+
 class ImageProcessor:
 
     def __init__(self):
@@ -21,8 +22,8 @@ class ImageProcessor:
                             "thresh-custom": [],
                             "thresh-mean": []}
 
-        self.out_dirs = {"ridge-opencv": "DRIVE/processed/ridge-detection-opencv/",
-                         "ridge-custom": "DRIVE/processed/ridge-detection-custom/",
+        self.out_dirs = {"ridge-custom": "DRIVE/processed/ridge-detection-custom/",
+                         "ridge-opencv": "DRIVE/processed/ridge-detection-opencv/",
                          "thresh-custom": "DRIVE/processed/thresholding-custom/",
                          "thresh-mean": "DRIVE/processed/thresholding-mean/"}
 
