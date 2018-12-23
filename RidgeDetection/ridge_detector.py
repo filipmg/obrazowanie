@@ -1,20 +1,13 @@
-from enum import Enum
 from skimage.feature import hessian_matrix, hessian_matrix_eigvals
 import numpy as np
 import cv2
 
-
-class DetectionType(Enum):
-    CUSTOM = 1
-    OPENCV = 2
-
-
 class RidgeDetector:
 
     def detect_ridges(self, image, detection_type):
-        if detection_type == DetectionType.CUSTOM:
+        if detection_type == 1:
             out_image = self.__detect_using_custom(image)
-        elif detection_type == DetectionType.OPENCV:
+        elif detection_type == 2:
             out_image = self.__detect_using_opencv(image)
         else:
             out_image = self.__detect_using_opencv(image)

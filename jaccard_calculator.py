@@ -31,5 +31,8 @@ class JaccardCalculator:
 
         print(self.jaccard_scores)
 
+        print("Ridge custom, mean score: ", statistics.mean(self.jaccard_scores["ridge-custom"]))
+        print("Ridge OpenCV, mean score: ", statistics.mean(self.jaccard_scores["ridge-opencv"]))
+
 
 

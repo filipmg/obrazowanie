@@ -1,12 +1,11 @@
-from RidgeDetection.ridge_detector import RidgeDetector, DetectionType
+from RidgeDetection.ridge_detector import RidgeDetector
 from Thresholding.thresholder import Thresholder, DetectionType
 import glob
 import cv2
 import os
 import statistics
-import numpy
 from PIL import Image
-numpy.set_printoptions(threshold=numpy.nan)
+import numpy
 
 class ImageProcessor:
 
@@ -55,12 +54,13 @@ class ImageProcessor:
 
     def process_data(self):
 
+        # Ridge detection
         ridge_thresholding = 5.5
 
-        for image in self.training_data:
+        for image, mask in zip(self.training_data, self.training_data_mask):
             image = (image[0], cv2.cvtColor(image[1], cv2.COLOR_BGR2GRAY))
-            out_ridge_opencv = self.ridgeDetector.detect_ridges(image[1], DetectionType.OPENCV)
-            out_ridge_custom = self.ridgeDetector.detect_ridges(image[1], DetectionType.CUSTOM)
+            out_ridge_opencv = self.ridgeDetector.detect_ridges(image[1], 1)
+            out_ridge_custom = self.ridgeDetector.detect_ridges(image[1], 2)
 
             out_ridge_opencv[out_ridge_opencv > ridge_thresholding*statistics.median(out_ridge_opencv.ravel())] = 255
             out_ridge_opencv[out_ridge_opencv <= ridge_thresholding*statistics.median(out_ridge_opencv.ravel())] = 0
@@ -70,6 +70,7 @@ class ImageProcessor:
             out_ridge_custom[out_ridge_custom <= ridge_thresholding*statistics.median(out_ridge_custom.ravel())] = 0
             self.output_data["ridge-custom"].append((image[0], out_ridge_custom))
 
+        # Thresholding
         self.proces_data_threasholding()
     
     def proces_data_threasholding(self):
