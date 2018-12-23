@@ -6,6 +6,7 @@ import os
 import statistics
 from PIL import Image
 import numpy
+import datetime
 
 
 class ImageProcessor:
@@ -58,18 +59,33 @@ class ImageProcessor:
         # Ridge detection
         ridge_thresholding = 5.5
 
+        t1 = datetime.datetime.now()
+        # Custom
         for image, mask in zip(self.training_data, self.training_data_mask):
             image = (image[0], cv2.cvtColor(image[1], cv2.COLOR_BGR2GRAY))
-            out_ridge_opencv = self.ridgeDetector.detect_ridges(image[1], 1)
             out_ridge_custom = self.ridgeDetector.detect_ridges(image[1], 2)
-
-            out_ridge_opencv[out_ridge_opencv > ridge_thresholding*statistics.median(out_ridge_opencv.ravel())] = 255
-            out_ridge_opencv[out_ridge_opencv <= ridge_thresholding*statistics.median(out_ridge_opencv.ravel())] = 0
-            self.output_data["ridge-opencv"].append((image[0], out_ridge_opencv))
 
             out_ridge_custom[out_ridge_custom > ridge_thresholding*statistics.median(out_ridge_custom.ravel())] = 255
             out_ridge_custom[out_ridge_custom <= ridge_thresholding*statistics.median(out_ridge_custom.ravel())] = 0
             self.output_data["ridge-custom"].append((image[0], out_ridge_custom))
+        t2 = datetime.datetime.now()
+
+        time = t2-t1
+        print("Custom ridge detection time, seconds: ", time.seconds, " microseconds: ", time.microseconds)
+
+        t1 = datetime.datetime.now()
+        # OpenCV
+        for image, mask in zip(self.training_data, self.training_data_mask):
+            image = (image[0], cv2.cvtColor(image[1], cv2.COLOR_BGR2GRAY))
+            out_ridge_opencv = self.ridgeDetector.detect_ridges(image[1], 1)
+
+            out_ridge_opencv[out_ridge_opencv > ridge_thresholding*statistics.median(out_ridge_opencv.ravel())] = 255
+            out_ridge_opencv[out_ridge_opencv <= ridge_thresholding*statistics.median(out_ridge_opencv.ravel())] = 0
+            self.output_data["ridge-opencv"].append((image[0], out_ridge_opencv))
+        t2 = datetime.datetime.now()
+
+        time = t2-t1
+        print("OpenCV ridge detection time, seconds: ", time.seconds, " microseconds: ", time.microseconds)
 
         # Thresholding
         self.proces_data_threasholding()
