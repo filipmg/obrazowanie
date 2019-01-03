@@ -1,6 +1,8 @@
-tensorflow
+tf-nightly
 numpy
 sklearn
 scikit-image
 keras
+opencv-python
+opencv-contrib-python
 
