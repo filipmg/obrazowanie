@@ -1,5 +1,6 @@
 from RidgeDetection.ridge_detector import RidgeDetector
 from Thresholding.thresholder import Thresholder, DetectionType
+from UNet.unet import perform_unet_detection
 import glob
 import cv2
 import os
@@ -21,12 +22,14 @@ class ImageProcessor:
         self.output_data = {"ridge-opencv": [],
                             "ridge-custom": [],
                             "thresh-custom": [],
-                            "thresh-mean": []}
+                            "thresh-mean": [],
+                            "unet": []}
 
         self.out_dirs = {"ridge-custom": "DRIVE/processed/ridge-detection-custom/",
                          "ridge-opencv": "DRIVE/processed/ridge-detection-opencv/",
                          "thresh-custom": "DRIVE/processed/thresholding-custom/",
-                         "thresh-mean": "DRIVE/processed/thresholding-mean/"}
+                         "thresh-mean": "DRIVE/processed/thresholding-mean/",
+                         "unet": "DRIVE/processed/unet/"}
 
         self.create_output_dirs()
 
@@ -55,7 +58,6 @@ class ImageProcessor:
                 cv2.imwrite(self.out_dirs[dataset] + image[0] + '-processed' + '.tif', image[1])
 
     def process_data(self):
-
         # Ridge detection
         ridge_thresholding = 5.5
 
@@ -88,9 +90,12 @@ class ImageProcessor:
         print("OpenCV ridge detection time, seconds: ", time.seconds, " microseconds: ", time.microseconds)
 
         # Thresholding
-        self.proces_data_threasholding()
-    
-    def proces_data_threasholding(self):
+        self.proces_data_thresholding()
+
+        # Unet
+        self.proces_data_unet()
+
+    def proces_data_thresholding(self):
         for image in self.training_data:
             image = (image[0], cv2.cvtColor(image[1], cv2.COLOR_BGR2GRAY))
             out_thresh_mean = self.thresholder.thresh(image[1], DetectionType.OPENCV)
@@ -101,6 +106,15 @@ class ImageProcessor:
             out_thresh_custom = self.thresholder.thresh(image[1], DetectionType.CUSTOM, mask=mask)
             self.output_data["thresh-custom"].append((image[0], out_thresh_custom))
     
+    def proces_data_unet(self):
+        perform_unet_detection()
+        self.file_list = glob.glob('UNet/data/vines/test/*unet.png')
+        analyzed_data = []
+        for filename in self.file_list:
+            analyzed_data.append((filename.rsplit('/', 1)[-1].rsplit('.')[0], cv2.imread(filename,0)))
+        for image in analyzed_data:
+            ret,thresh1 = cv2.threshold(image[1],250,255,cv2.THRESH_BINARY)
+            self.output_data["unet"].append((image[0], thresh1))
 
     def get_processed_data(self):
         return self.output_data
