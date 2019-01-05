@@ -96,16 +96,27 @@ class ImageProcessor:
         self.proces_data_unet()
 
     def proces_data_thresholding(self):
-        for image in self.training_data:
-            image = (image[0], cv2.cvtColor(image[1], cv2.COLOR_BGR2GRAY))
-            out_thresh_mean = self.thresholder.thresh(image[1], DetectionType.OPENCV)
-            self.output_data["thresh-mean"].append((image[0], out_thresh_mean)) 
-
+        #custom
+        t1 = datetime.datetime.now()
         for image in self.training_data:
             mask = self.training_data_mask[self.training_data.index(image)]
-            out_thresh_custom = self.thresholder.thresh(image[1], DetectionType.CUSTOM, mask=mask)
+            out_thresh_custom = self.thresholder.thresh(image[1], DetectionType.CUSTOM, mask)
             self.output_data["thresh-custom"].append((image[0], out_thresh_custom))
-    
+        t2 = datetime.datetime.now()
+        time = t2-t1
+        print("Custom thresholding time, seconds: ", time.seconds, " microseconds: ", time.microseconds)
+
+        #openCV
+        t1 = datetime.datetime.now()
+        for image in self.training_data:
+            mask = self.training_data_mask[self.training_data.index(image)]
+            image = (image[0], cv2.cvtColor(image[1], cv2.COLOR_BGR2GRAY))
+            out_thresh_mean = self.thresholder.thresh(image[1], DetectionType.OPENCV, mask)
+            self.output_data["thresh-mean"].append((image[0], out_thresh_mean)) 
+        t2 = datetime.datetime.now()
+        time = t2-t1
+        print("OpenCV thresholding time, seconds: ", time.seconds, " microseconds: ", time.microseconds)
+
     def proces_data_unet(self):
         perform_unet_detection()
         self.file_list = glob.glob('UNet/data/vines/test/*unet.png')
