@@ -7,8 +7,8 @@ import statistics
 class JaccardCalculator:
 
     def __init__(self, output_data):
-        self.manual_dir = "DRIVE\\training\\1st_manual\\*.png"
-        self.unet_manual_dir = "UNet\\data\\vines\\test\\*predict.png"
+        self.manual_dir = "DRIVE/training/1st_manual/*.png"
+        self.unet_manual_dir = "UNet/data/vines/test/*predict.png"
         self.output_data = output_data
         self.manual_images = []
         self.jaccard_scores = {}
@@ -61,8 +61,8 @@ class JaccardCalculator:
         print("Threshold OpenCV, mean Jaccard score: ", statistics.mean(self.jaccard_scores["thresh-mean"]))
         print("Threshold OpenCV, mean Zero One Loss score: ", statistics.mean(self.zero_one_lose_scores["thresh-mean"]))
 
-     #   print("UNet, mean Jaccard score: ", statistics.mean(self.jaccard_scores["unet"]))
-     #   print("UNet, mean Zero One Loss score: ", statistics.mean(self.zero_one_lose_scores["unet"]))
+        print("UNet, mean Jaccard score: ", statistics.mean(self.jaccard_scores["unet"]))
+        print("UNet, mean Zero One Loss score: ", statistics.mean(self.zero_one_lose_scores["unet"]))
 
 
 
